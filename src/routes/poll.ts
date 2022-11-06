@@ -141,6 +141,7 @@ export async function pollRoutes(fastify: FastifyInstance) {
     })
     return {polls}
   })
+  
   fastify.get('/polls/:id', {
     onRequest: [authenticate],
   }, async (request) => {
