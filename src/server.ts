@@ -1,12 +1,9 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import { z } from 'zod'
-import { PrismaClient } from '@prisma/client'
 import ShortUniqueId from 'short-unique-id'
+import { prisma } from './lib/prisma'
 
-const prisma = new PrismaClient({
-  log: ['query']
-})
 
 async function bootstrap() {
   const fastify = Fastify({
@@ -15,11 +12,6 @@ async function bootstrap() {
 
   await fastify.register(cors, {
     origin: true
-  })
-
-  fastify.get('/pools/count', async () => {
-    const count = await prisma.pool.count()
-    return { count }
   })
 
   fastify.get('/users/count', async () => {
@@ -32,16 +24,16 @@ async function bootstrap() {
     return { count }
   })
 
-  fastify.post('/pools', async (request, reply) => {
-    const createPoolBody = z.object({
+  fastify.post('/polls', async (request, reply) => {
+    const createPollBody = z.object({
       title: z.string(),
     })
 
-    const { title } = createPoolBody.parse(request.body)
+    const { title } = createPollBody.parse(request.body)
     const generateId = new ShortUniqueId({length: 6})
     const code = String(generateId()).toUpperCase()
     
-    await prisma.pool.create({
+    await prisma.poll.create({
       data: {
         title,
         code

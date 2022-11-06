@@ -6,14 +6,14 @@ async function main() {
   const user = await prisma.user.create({
     data: {
       name: 'Desmennyellysson Jerry',
-      email: 'desmenny@mail.com',
+      email: 'desmenny1@mail.com',
       avatarUrl: 'https://github.com/jademirf.png'
     }
   })
 
-  const pool = await prisma.pool.create({
+  const poll = await prisma.poll.create({
     data: {
-      title: 'Fake pool',
+      title: 'Fake poll',
       code: 'BOL001',
       ownerId: user.id,
       participants: {
@@ -45,9 +45,9 @@ async function main() {
 
           participant: {
             connect: {
-              userId_poolId: {
+              userId_pollId: {
                 userId: user.id,
-                poolId: pool.id,
+                pollId: poll.id,
               }
             }
           }
