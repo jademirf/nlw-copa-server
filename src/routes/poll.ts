@@ -60,7 +60,7 @@ export async function pollRoutes(fastify: FastifyInstance) {
 
     const { code } = joinPollBody.parse(request.body)
 
-    const poll = prisma.poll.findUnique({
+    const poll = await prisma.poll.findUnique({
       where: { code },
       include: {
         participants: {
@@ -78,7 +78,7 @@ export async function pollRoutes(fastify: FastifyInstance) {
     }
     if (poll.participants.length > 0) {
       return reply.status(400).send({
-        message: 'You already joined this poll'
+        message: 'You already joined this poll',
       })
     }
     if (!poll.ownerId) {
@@ -92,7 +92,7 @@ export async function pollRoutes(fastify: FastifyInstance) {
       })
     }
 
-    await prisma.poll.create({
+    await prisma.participant.create({
       data: {
         pollId: poll.id,
         userId: request.user.sub,
@@ -141,7 +141,7 @@ export async function pollRoutes(fastify: FastifyInstance) {
     })
     return {polls}
   })
-  
+
   fastify.get('/polls/:id', {
     onRequest: [authenticate],
   }, async (request) => {
